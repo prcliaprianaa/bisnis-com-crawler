@@ -6,14 +6,16 @@ Crawler dan scraper untuk mengambil artikel dari [bisnis.com](https://www.bisnis
 
 - **Mode Backtrack**: Mengambil artikel dalam rentang tanggal tertentu (start date - end date)
 - **Mode Standard**: Berjalan terus-menerus (long-running), secara berkala mengambil artikel terbaru dengan interval yang dapat dikonfigurasi
+- **Polite scraping**: Delay 1 detik antar request agar tidak membebani server
+- **Auto-retry**: Otomatis mencoba ulang hingga 3 kali jika request gagal
 - Output berupa file JSON berisi link, judul, isi artikel, dan tanggal terbit (format ISO 8601)
 
 ## Instalasi
 
 ```bash
 # Clone repository
-git clone https://github.com/prcliaprianaa/bisnis-crawler.git
-cd bisnis-crawler
+git clone https://github.com/prcliaprianaa/bisnis-com-crawler.git
+cd bisnis-com-crawler
 
 # Install dependencies
 pip install -r requirements.txt
@@ -70,7 +72,7 @@ Tekan `Ctrl+C` untuk menghentikan. Output: `output/standard_YYYYMMDD_HHMMSS.json
 ## Arsitektur
 
 ```
-bisnis-crawler/
+bisnis-com-crawler/
 ├── core/                  # Modul inti (dipakai kedua mode)
 │   ├── __init__.py
 │   ├── scraper.py         # Fungsi fetch & parse artikel
@@ -85,7 +87,7 @@ bisnis-crawler/
 ### Penjelasan Modul
 
 **`core/scraper.py`** — Modul dasar yang berisi fungsi-fungsi inti:
-- `fetch_page(url)` — Mengambil konten HTML dari URL
+- `fetch_page(url)` — Mengambil konten HTML dari URL, dengan delay antar request dan auto-retry hingga 3 kali jika gagal
 - `parse_article(url)` — Mem-parse halaman artikel dan mengekstrak judul, isi, dan tanggal terbit
 - `extract_date_from_url(url)` — Mengekstrak tanggal dari pola URL bisnis.com (`/read/YYYYMMDD/...`)
 - `save_to_json(articles, filename)` — Menyimpan list artikel ke file JSON
